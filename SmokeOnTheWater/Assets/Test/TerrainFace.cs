@@ -24,16 +24,14 @@ public class TerrainFace {
         axisA = new Vector3(localUp.y, localUp.z, localUp.x);
         axisB = Vector3.Cross(localUp, axisA);
     }
-    public float Get3DPerlinNoise(float x, float y, float z)
-        {
-            // Sample 2D Perlin noise at different Z slices
-            float noiseXY = Mathf.PerlinNoise(x * noiseScale, y * noiseScale);
-            float noiseXZ = Mathf.PerlinNoise(x * noiseScale, z * 20);
-            float noiseYZ = Mathf.PerlinNoise(y * noiseScale, z * 20);
+    public float Get3DPerlinNoise(float x, float y, float z, float scale)
+    {
+        float noise = Mathf.PerlinNoise(x * scale + 12.34f, y * scale - 56.78f) +
+              Mathf.PerlinNoise(y * scale + 78.91f, z * scale - 23.45f) +
+              Mathf.PerlinNoise(z * scale + 67.89f, x * scale - 12.34f);
 
-            // Combine the results (simple averaging for demonstration)
-            return (noiseXY + noiseXZ + noiseYZ) / 3f; 
-        }
+        return noise /= 3f;
+    }
     public void ConstructMesh()
     {
         Vector3[] vertices = new Vector3[resolution * resolution];
@@ -48,7 +46,9 @@ public class TerrainFace {
                 Vector2 percent = new Vector2(x, y) / (resolution - 1);
                 Vector3 pointOnUnitCube = localUp + (percent.x - .5f) * 2 * axisA + (percent.y - .5f) * 2 * axisB;
                 Vector3 pointOnUnitSphere = pointOnUnitCube.normalized;
-                float noise = Get3DPerlinNoise(pointOnUnitSphere.x, pointOnUnitSphere.y, pointOnUnitSphere.z) * noiseStrength;
+                float noise = Get3DPerlinNoise(pointOnUnitSphere.x, pointOnUnitSphere.y, pointOnUnitSphere.z, noiseScale) * noiseStrength - (noiseStrength / 2);
+                noise += Get3DPerlinNoise(pointOnUnitSphere.x, pointOnUnitSphere.y, pointOnUnitSphere.z, noiseScale * 4) * noiseStrength / 8;
+                noise += Get3DPerlinNoise(pointOnUnitSphere.x, pointOnUnitSphere.y, pointOnUnitSphere.z, noiseScale * 32) * noiseStrength / 32;
                 pointOnUnitSphere *= 1 + noise;
                 vertices[i] = pointOnUnitSphere;
 
