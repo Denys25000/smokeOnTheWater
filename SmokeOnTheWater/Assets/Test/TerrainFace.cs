@@ -24,7 +24,16 @@ public class TerrainFace {
         axisA = new Vector3(localUp.y, localUp.z, localUp.x);
         axisB = Vector3.Cross(localUp, axisA);
     }
+    public float Get3DPerlinNoise(float x, float y, float z)
+        {
+            // Sample 2D Perlin noise at different Z slices
+            float noiseXY = Mathf.PerlinNoise(x * noiseScale, y * noiseScale);
+            float noiseXZ = Mathf.PerlinNoise(x * noiseScale, z * 20);
+            float noiseYZ = Mathf.PerlinNoise(y * noiseScale, z * 20);
 
+            // Combine the results (simple averaging for demonstration)
+            return (noiseXY + noiseXZ + noiseYZ) / 3f; 
+        }
     public void ConstructMesh()
     {
         Vector3[] vertices = new Vector3[resolution * resolution];
@@ -39,7 +48,7 @@ public class TerrainFace {
                 Vector2 percent = new Vector2(x, y) / (resolution - 1);
                 Vector3 pointOnUnitCube = localUp + (percent.x - .5f) * 2 * axisA + (percent.y - .5f) * 2 * axisB;
                 Vector3 pointOnUnitSphere = pointOnUnitCube.normalized;
-                float noise = Mathf.PerlinNoise(pointOnUnitSphere.x * noiseScale, pointOnUnitSphere.y * noiseScale) * noiseStrength;
+                float noise = Get3DPerlinNoise(pointOnUnitSphere.x, pointOnUnitSphere.y, pointOnUnitSphere.z) * noiseStrength;
                 pointOnUnitSphere *= 1 + noise;
                 vertices[i] = pointOnUnitSphere;
 
