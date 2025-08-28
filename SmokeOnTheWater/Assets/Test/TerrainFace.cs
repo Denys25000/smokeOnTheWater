@@ -50,7 +50,7 @@ public class TerrainFace {
                 noise += Get3DPerlinNoise(pointOnUnitSphere.x, pointOnUnitSphere.y, pointOnUnitSphere.z, noiseScale * 4) * noiseStrength / 8;
                 noise += Get3DPerlinNoise(pointOnUnitSphere.x, pointOnUnitSphere.y, pointOnUnitSphere.z, noiseScale * 32) * noiseStrength / 32;
                 pointOnUnitSphere *= 1 + noise;
-                vertices[i] = pointOnUnitSphere;
+                vertices[i] = pointOnUnitSphere - localUp;
 
                 if (x != resolution - 1 && y != resolution - 1)
                 {

@@ -74,7 +74,6 @@ public class PlayerMovement : MonoBehaviour
         if (moveDir.magnitude > 0.1f)
         {
             Quaternion targetRot = Quaternion.LookRotation(moveDir, transform.up);
-
         }
     }
 

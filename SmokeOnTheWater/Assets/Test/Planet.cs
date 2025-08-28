@@ -44,6 +44,7 @@ public class Planet : MonoBehaviour {
             }
 
             terrainFaces[i] = new TerrainFace(meshFilters[i].sharedMesh, resolution, directions[i], noiseScale, noiseStrength);
+            meshFilters[i].transform.localPosition = directions[i] / 2;
         }
     }
 
